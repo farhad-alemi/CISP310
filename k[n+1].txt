@@ -1,0 +1,24 @@
+n = 2;
+int i;
+bool a;
+a = false;
+for (i = 0; i <= n; i++)
+{
+	bool b;
+	b= true;
+	for (j = i + 1; j <= n; j++)
+	{
+		b = b && p[j];
+	}
+	a = a || (g[i] && b);
+}
+
+bool c;
+c = true;
+for (i = 0; i <= n; i++)
+{
+	c = c && p[i];
+}
+
+k3 = a || (k0 && c);
+48:00
