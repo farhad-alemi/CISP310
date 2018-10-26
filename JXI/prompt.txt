@@ -1,0 +1,40 @@
+L-Flag: 3
+O-Flag: 6
+S-Flag: 3
+C-Flag: 3
+Z-Flag: 6
+
+ldi a,id
+ldi b,id
+L0:
+inc b
+ldi c,id_end
+cmp b,c
+jci cont
+jmpi done
+cont:
+ld c,(a)
+ld d,(b)
+cmp c,d
+jxi L1 // change x here
+jmpi L2
+L1:
+nop
+jmpi L3
+L2:
+nop
+L3:
+inc a
+jmpi L0
+done:
+halt
+
+id:
+byte 1 // right most digit of student ID
+byte 5 // second right most digit of student ID
+byte 9
+byte 8
+byte 2
+byte 6
+byte 1 // left most digit of student ID
+id_end:
