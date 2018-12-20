@@ -1,0 +1,64 @@
+main:
+x: 0
+y: x 1 +
+
+dec d // alloc for y
+ldi a,8
+st (d),a
+
+dec d // alloc for x
+ldi b,1
+st (d),b
+
+dec d // param2
+ldi c,y 1 +
+add c,d
+st (d),c // param2=&y
+
+dec d
+ldi c,x 2 +
+add c,d
+st (d),c
+
+ldi c,. 6 +
+dec d
+st (d),c
+jmpi swap
+
+inc d
+inc d
+
+inc d
+inc d
+halt
+
+swap:
+retAddr: 0
+ptrA: retAddr 1 +
+ptrB: ptrA 1 +
+
+dec d
+ldi c, ptrA 1 +
+add c,d
+ld c,(c)
+
+cpr a,c
+
+ld c,(c)
+st (d),c
+
+ldi b, ptrB 1 +
+add b,d
+ld b,(b)
+
+cpr c,b
+
+ld b,(b)
+st (a),b
+ld a,(d)
+st (c),a
+
+inc d
+ld b,(d)
+inc d
+jmp b

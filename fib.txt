@@ -1,0 +1,79 @@
+main:
+m: 2
+ldi d, 0          // reset stack pointer
+
+dec d             // alloc space for x
+
+ldi b, m          // m should be initialized
+dec d             // alloc param (m)
+st (d),b          // *d = b
+
+ldi c,. 6 +       // calculating retAddr for f(m)
+dec d             // alloc retAddr
+st (d),c          // *d = c
+jmpi f            // call to f(m)
+
+inc d             // dealloc space for x
+inc d             // dealloc param(m)
+
+halt
+
+f:
+retAddr: 0
+n: retAddr 1 +
+
+ldi b, 2          // b = 2
+
+ldi c, n
+add c,d           // c = &n
+ld c,(c)          // c = n
+
+cmp b,c
+jli Else
+jzi Else
+
+ldi a, n
+add a,d          // a = &n
+ld a,(a)         // a = n
+
+ld b,(d)         // get retAddr
+inc d            // dealloc retAddr
+jmp b            // go to retAddr
+
+Else:
+dec d            // alloc param (n - 1)
+dec c            // n - 1
+st (d),c         // *d = c
+
+ldi c,. 6 +      // calculating retAddr for f(n - 1)
+dec d            // allocate retAddr for f(n - 1)
+st (d),c         // *d = c
+jmpi f           // call to f(n - 1)
+
+inc d            // dealloc param (n - 1)
+
+dec d            // alloc for return value of f(n - 1)
+st (d),a         // *d = a
+
+ldi c, n 1 +     // trying to load n to regC
+add c,d          // c = &n
+ld c,(c)         // c = n
+dec c
+dec c            // n - 2, decremented twice
+
+dec d            // alloc for param (n - 2)
+st (d),c         // *d = c
+
+ldi c,. 6 +      // calculating retAddr for f(n - 2)
+dec d            // allocate retAddr for f(n - 2)
+st(d),c          // *d = c
+jmpi f           // call to f(n - 1)
+
+inc d            // dealloc param (n - 2)
+ld b,(d)         // d = *d
+inc d            // dealloc return value of f(n - 1)
+add a,b          // *a = *a + *b
+
+ld b,(d)         // get retAddr
+inc d            // dealloc retAddr
+jmp b            // go to retAddr
