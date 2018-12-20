@@ -1,0 +1,90 @@
+ldi d,0
+
+main:
+dec d   // alloc for x
+x: 0
+
+ldi b,12
+dec d   // alloc for param
+st (d),b
+
+ldi c,. 6 +
+dec d   // alloc for return add
+st (d),c
+jmpi f
+
+inc d   // dealloc param
+
+st (d),a // x=f(?)
+inc d   // dealloc x
+halt
+
+f:
+retAddr_f: 0
+n: retAddr_f 1 +
+
+ldi b,n
+add b,d
+ld b,(b)   // b==n
+ldi c,2
+
+cmp b,c
+jci L1
+
+dec b     // b==n-1
+dec d     // alloc for n-1
+st (d),b
+
+ldi c,. 6 +
+dec d     // alloc retAddr_fn-1
+st (d),c
+jmpi f
+
+inc d     // dealloc param n - 1
+
+dec d     // alloc for ret_val fn-1
+st (d),a
+
+ldi b,n 1 + // account for ret_val fn-1
+add b,d
+ld b,(b)    // b==n
+dec b
+dec b       // b==n-2
+dec d       // alloc for param n-2
+st (d),b
+
+ldi c,. 6 +
+dec d       // alloc for retAddr fn-2
+st (d),c
+jmpi f
+
+inc d       // dealloc param n-2
+ld b,(d)    // b==ret_val fn-1
+inc d       // dealloc ret_val fn-1
+add a,b
+
+ld b,(d)
+inc d       // dealloc retAddr
+jmp b
+
+L1:
+ldi a,n
+add a,d
+ld a,(a)
+
+// f ret
+ld b,(d)
+inc d
+jmp b
+/////////////////////////////
+uint8_t f(uint8_t n)
+{
+  return (n<2) ? (n) : (f(n-1)+f(n-2));
+}
+
+int main()
+{
+  uint8_t x;
+  x = f(???);
+  return 0;
+}
